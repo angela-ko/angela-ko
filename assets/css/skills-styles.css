@@ -151,12 +151,12 @@ to {
 	border-radius: 3px;
 }
 #Skill-Git {
-	width: 95%;
 	animation: Animate-SQL 4s;
 	-webkit-animation: Animate-SQL 4s;
 	-moz-animation: Animate-SQL 4s;
 	-o-animation: Animate-SQL 4s;
 	height: 45px;
+	width: 95%;
 	position: absolute;
 	background-color: #9b59b6;
 	-webkit-border-radius: 3px;
@@ -164,11 +164,11 @@ to {
 	border-radius: 3px;
 }
 #Skill-Premiere {
-	width: 95%;
 	animation: Animate-SQL 4s;
 	-webkit-animation: Animate-SQL 4s;
 	-moz-animation: Animate-SQL 4s;
 	-o-animation: Animate-SQL 4s;
+	width: 95%;
 	height: 45px;
 	position: absolute;
 	background-color: #27ae60;
