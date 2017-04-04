@@ -138,11 +138,11 @@ to {
 }
 
 #Skill-SQL {
-	width: 95%;
 	animation: Animate-SQL 4s;
 	-webkit-animation: Animate-SQL 4s;
 	-moz-animation: Animate-SQL 4s;
 	-o-animation: Animate-SQL 4s;
+	width: 80%;
 	height: 45px;
 	position: absolute;
 	background-color: #DF9496;
