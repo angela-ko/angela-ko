@@ -214,7 +214,6 @@ p{
 /* Section 5 */
 #section5 {
     color: #fff;
-    height: 50px;
 }
 
 /*First Page Divs*/
@@ -225,5 +224,28 @@ p{
 
 .about {
     font-family: 'Roboto', sans-serif;
+}
+
+.skills-header {
+    font-size: 38px;
+}
+
+.skills-subheader {
+    font-size: 28px;
+    color: #8bb2af;
+}
+
+.skills-container {
+    background: #fff;
+    padding: 15px 15px;
+    /* Separate from rest of website*/
+    margin-top: 20px;
+    margin-bottom: 50px;
+    /* Center the list*/
+    margin-left: auto;
+    margin-right: auto;
+    /* Control Width of List*/
+    width: 500;
+    opacity: 0.9;
 }
 
