@@ -103,8 +103,8 @@ p{
     text-align: center;
 }
 #thumbnail {
-    width: 200px;
-    height: 200px;
+    width: 300px;
+    height: 300px;
     border-radius: 100%;
     overflow: hidden;
     margin: 0 auto;
@@ -186,7 +186,7 @@ p{
 
 #thumbnail img {
 /* Part 2: Cropping my profile picture to shift it so that it's centered around face*/
-    margin-left: -60px;
+    margin-left: -100px;
     opacity: 1;
 }
 /* Section 0 */
