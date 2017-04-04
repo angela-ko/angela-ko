@@ -1,55 +1,79 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>Roommates Plus</title>
+        <title>Angela Ko</title>
+        <meta name="author" content="Angela Ko" />
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
-        <link rel="stylesheet" href="assets/css/style.css">
-        <link href='http://fonts.googleapis.com/css?family=Lato:100,300,400,700' rel='stylesheet' type='text/css'>
-        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js">
-        </script> 
-        <script src = "assets/js/script.js"></script>
+        
+        <link rel="stylesheet" type="text/css" href="assets/css/jquery.fullPage.css" />
+        <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+
+
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
+
+        <script type="text/javascript" src="assets/js/vendors/scrolloverflow.js"></script>
+
+        <script type="text/javascript" src="assets/js/jquery.fullPage.js"></script>
+        <script type="text/javascript">
+            $(document).ready(function() {
+                $('#fullpage').fullpage({
+                    sectionsColor: ['#A2ADBC', '#FFFFFF', '#8bb2af', '#FFFFFF', '#DF9496', '#A2ADBC'],
+                    anchors:['Home', 'About', 'Skills', 'Code', 'Design', 'Contact Me'],
+                    navigation: true,
+                    navigationPosition: 'right',
+                    navigationTooltips: ['Home', 'About', 'Skills', 'Code', 'Design', 'Contact Me'],
+                });
+            });
+        </script>
     </head>
     <body>
-    <div id="page-container">
-        <div id="navigation"> 
-            <div id= "navigation-header"> Roommates+</div>
-            <div id="newroom">Create New Room</div>
-            <div id="login">Login to Existing</div>
-        </div>
-    </div>
 
-    <div id="modal-container">
-        <div id="modal-box">
-            <div id="modal-header">Create A New Room</div>
-            <div>
-                <input type = "text" class = "Input" placeholder = "Enter Roomname" /> 
-                <input type = "text" class = "Input" placeholder = "Enter Username" /> 
-                <input type = "text" class = "Input" placeholder = "Enter Password" /> 
-            </div>
-            <div id="modal-footer">
-                <div id="submit">Submit</div>
-                <div id="cancel">Cancel</div>
-            </div>
-        </div>
-    </div>
+    <div id="fullpage">
+        <div class="section active" id="section0">
+            <h1>Angela Ko</h1>
+            <div class="bio">Software Engineer • Philomath • Ailurophile • <a href="assets/img/about/resume.pdf">Resume </a></div>
 
-    <div id="login-container">
-        <div id="login-box">
-            <div id="login-header">Login To Your Room</div>
-            <div>
-                <input type = "text" class = "input" placeholder = "Enter Username" /> 
-                <input type = "text" class = "input" placeholder = "Enter Password" /> 
             </div>
-            <div id="login-footer">
-                <a href="overview.html" target="_blank"><div id="login-submit">Login</div></a>
-                <div id="login-cancel">Cancel</div>
+
+        <div class="section" id="section1">
+            <div id="container">
+                <div id="thumbnail"><img src="assets/img/about/me.jpg" width=300px></div>
+                <div id="header">ANGELA KO</div>
+                <div id="subheader">3rd Year Cognitive Science & Computer Science</div>
+                <p id="description"><b>Welcome to my website!</p></b>
+                <p id="description1">Since I don’t really know how to start off this introduction without sounding like I’m on LinkedIn or a dating website and I also really enjoy making lists, I’ll just list off things that I love and hopefully it'll allow you to learn more about me as a person!</p>
+                <div class="list-container">
+                    <div class="list-title">Things I Love</div>
+                    <div class="list-content">
+                        <div class="list-item">...<b><i>learning</i></b>.  I love learning about people and the process of slowly unravelling more and more hidden traits of new and old friends. I love learning about how people work, which is why I double major in Cognitive Science, as people’s minds just fascinate me so much. I also really love learning new skills and also learning about how devices in our day to day lives actually function (e.g. learning about circuits and touchscreens). <b><i>More importantly, ...</i></b></div>
+                        <div class="list-item">...<b><i>the process of learning</i></b>. The experience of something completely foreign and unfamiliar suddenly makes so much sense is such a strange yet amazing process. Here is a funny example of what I mean!  </div>
+                        <div class="list-item">...<b><i>organization</i></b>. From Google calendars to bullet journals, I thoroughly enjoy planning out every single detail of my life and in fact, I would often time my activities to the minute. As a result, I am a big believer in the idea that there is always time if you try to make time. <b><i>Yet at the same time,...</i></b></div>
+                        <div class="list-item">...<b><i>going where life takes me</i></b>. Although I really enjoy planning out every detail of my life, and sometimes, the unexpected and unknown can worry me a bit, as cheesy as it may sound, many of the best things in life are unexpected. This phrase rings particularly true with my college career. For instance, having no prior experience with computer programming, I came into college expecting to do business and psychology, yet after much egging by my friend, I decided to enroll in the notorious introduction to computer science course: CS61A, a course that opened a brand new world of things that I had never imagined I would be capable of doing. Another such example is the fact that I ended up being on the staff for an Introduction to Electrical Engineering for two entire years by pure luck! You can read more about that story here.</div>
+                    </div>
+                </div>
             </div>
         </div>
+        
+        <div class="section" id="section2">
+            <h1>Skills</h1>
+        </div>
+        
+        <div class="section" id="section3">
+            <h1>Code</h1>
+        </div>
+        
+        <div class="section" id="section4">
+            <h1>Design</h1>
+        </div>
+
+        <div class="section" id="section5">
+            <h1>Contact Me</h1>
+        </div>
+
     </div>
-
-
 
     </body>
     </html>

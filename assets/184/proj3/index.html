@@ -1,0 +1,406 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>  
+    div.padded {  
+      padding-top: 0px;  
+      padding-right: 100px;  
+      padding-bottom: 0.25in;  
+      padding-left: 100px;  
+    }  
+  </style> 
+<title>Angela Ko  |  CS 184</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+<br />
+<h1 align="middle">Assignment 3: PathTracer</h1>
+    <h2 align="middle">Angela Ko</h2>
+
+    <div class="padded">
+        <o>The website writeup is intended to be a self-contained walkthrough of the assignment: we want this to be a piece of work which showcases your understanding of relevant concepts through both mesh images as well as written explanations about what you did to complete each part of the assignment. Try to be as clear and organized as possible when writing about your own output files or extensions to the assignment. We want to understand what you've achieved and how you've done it!</p> 
+        <p>If you are well-versed in web development, feel free to ditch this template and make a better looking page. Just make sure that you include all the components as we've laid them out here. </p>
+
+    <h2 align="middle">Part 1: Ray Generation and Intersection</h2>
+        <p>For raytrace_pixel, I first made sure that when I only had 1 sample, I generated my ray through the center of the pixel by offsetting x and y by 0.5, and scaled down by the width and height of the sample buffer respectively. I also set the ray's depth to max_ray_depth in order to implement the later parts.</p>
+        <p>When sample was not 1, I had a while loop and iterated through the amount of samples. For each sample, I grabbed a random rample using gridsampler, and offset my x and y by the random values, then scaled down by the width and height of the sample buffer.</p>
+        <p>After I offset my x's and y's, I passed them into my camera->generate ray, that I will talk about later. I trace the result of the ray and I sum up all the results and divide it by the number of samples when I finish to average the results of the rays.</p>
+        <p>For generate ray, in order to convert the points such that (0,0) maps to the bottom left and (1,1) maps to the top right, I used the below formuli, where bl was the given bottom left corner and the tr was the given top right corner in the assignment:</p>
+        <p align="middle"><pre align="middle">Camerax = br.x * (1-x) + x*tl.x</pre></p>
+        <p align="middle"><pre align="middle">Cameray = br.y * (1-y) + y*tl.y</pre></p>
+        <p>Then to convert it to world space, I multiplied the result vector (x, y, -1) to c2w, and normalized it using unit. I also set the ray's min and max t values to nClip and fClip camera parameters.</p>
+        <p> Now, for triangle intersection, I used the moller-trumbore algorithm to take advantage of the parametirization the points and of the usage of barycentric coordinates. I find the edges E1 and E2 by subtracting the points p2 and p3 each by p1. I find S, S1, S2 as well according to the formula from Lecture 5, slide 60, and then I use the results to find my t, b1, b2, and also my third barycentric coordinate by subtracting b1 and b2 from 1. </p>
+        <p>Now I check if my intersection is valid by seeing if t is within the range min_t and max_t, and I also check if all the barycentric values are greater than zero. If that's the case, I set my intersection accordingly, where the surface normal is just n1, n2, n3 interpolated by the barycentric values</p>
+        <p>If it's not valid or if the barycentric coordinates are negative, then I return false.</p>
+        <p>For sphere intersect, I followed the formula of the ray intersection with sphere. I first find all the necessary values of the quadratic formula (a, b, c, discriminant...etc). If the discriminante is less than 0, I return false because that means that there are no solutions and the ray does not intersect the surface. </p>
+        <p> Then I find the +/- results of the quadratic, and I first check if the smaller value is within range, if so, I set the intersection to the necessary values. If it's not within range, I check if the bigger value is within range because that means that the ray might originate from within the sphere/vacuum and the higher value could still intersect with the sphere. If that's the case, then I set the max_t to the higher value and I also return true. Only when both aren't within the range do I return false.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part1_bunny_32_16.png" width="480px" />
+                    <figcaption align="middle">Part 1 bunny with normal shading at sample 32, light 16</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part1_spheres_32_16.png" width="480px" />
+                    <figcaption align="middle">Part 1 lambertian spheres with normal shading at sample 32, light 16</figcaption>
+                </tr>
+            </table>
+        </div>
+
+
+    <h2 align="middle">Part 2</h2>
+        <p>I followed the steps in the specs. So I first computed the bounding box of the primitives in a loop, and for each one I expanded the centroid box and the bounding box. (I mostly used centroid box for calculations because it was more efficient since centroid box would have a lesser chance of splitting all the primitives to one side). I checked if the node was a leaf, and if so, I returned it after setting the prims. </p>
+        <p> For splitting, I calculated the midpoint using the centroid box, and then I compared the values of the centroid box's extent to see which dimension was the largest. When the largest dimension was x, if all my primitives were on one side （either left or right), I would then try the y axis, and if that happens again, try z axis, and if z axis fails, I would give up and just return the node. </p>
+        <p> For bvh intersect, I first call bbox intersect, and if that is false, then I just return false (because there's no point recursing down if there isn't even an intersect on the bbox). Then I check if the node is a leaf, if so, I iterate through every ray in the prims. If not, I recursively call the children. </p>
+        <p>Bbox intersect wasn't mentioned on the spec but I feel like i should still briefly talk about it. I basically used axis aligned plane intersection with x and y plane, then the tight bound of the two with the z plane. In the case that the min of one plane is greater than the max of the other, I return false because that means there is no intersection. Also in the case that both values are negative, Ren said that it doesn't count as an actual valid intersection so I return false.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part2_beast_32_16.png" width="480px" />
+                    <figcaption align="middle">Part 2 beast with normal shading at sample 32, light 16. I used the wrong dimensions but you get the point, LOL</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part2_maxplanck_32_16.png" width="480px" />
+                    <figcaption align="middle">Part 1 lambertian spheres with normal shading at sample 32, light 16</figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">Part 3</h2>
+        <p>Direct lighting was pretty straightforward in that I basically followed the steps in the spec. I am given the hit point, so for every light in the scene, I sum over the results and average it by the amount of samples. Since the BSDF operates in object space, I converted wi that I get from sample_L to object space but multiplying it with the world to object matrix. Then I create a shadow ray with the origin offset by EPS_D*wi to see if it intersects using bvh->intersect. If it does, then I add to the outgoing radiance L_out using monte carlo integration.</p>
+        <p align="middle"><pre align="middle">L_out += (light * f(w_out, w_in) * cos(w_in)) / (pdf * sample)</pre></p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_dir_bunny_64_32.png" width="480px" />
+                    <figcaption align="middle">Bunny with direct light s 64, l 32</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p> Comparing the different numbers of light rays</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_indir_sphere_16_1.png" width="480px" />
+                    <figcaption align="middle">Sphere at s=16, l=1</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_indir_sphere_16_2.png" width="480px" />
+                    <figcaption align="middle">Sphere at s=16, l=2</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_indir_sphere_16_8.png" width="480px" />
+                    <figcaption align="middle">Sphere at s=16, l=8</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_indir_sphere_16_16.png" width="480px" />
+                    <figcaption align="middle">Sphere at s=16, l=16</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_indir_sphere_16_64.png" width="480px" />
+                    <figcaption align="middle">Sphere at s=16, l=64</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p> I noticed that the more light rays I had, the less bright the ball on the left was and the less noise was in the image. The soft shadows get more blurred and more smooth with more light rays.</p>
+        
+
+    <h2 align="middle">Part 4</h2>
+        <p>For indirect lighting, since sample_f returns the w_in in object space, in my ray, I convert it to world using the o2w matrix and use that as the direction and the origin is the hit point off set by the world wi * EPS_d. I then decrease the depths of the ray passed into the function by 1, so trace ray can recursively call the indirect lighting. Then the returned radiance is pretty much the same as before, except I multiply the pdf by the random probability I talk about in the next paragraph.</p>
+        <p>I also generated a random variable using 10 the illum() of the sample that I clamped to be between 1 and 0, and returned a black spectrum at 1 minus the random probability I generated.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_glob_bunny_64_32.png" width="480px" />
+                    <figcaption align="middle">Bunny with global lighting s 64, l 32</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_glob_dragon_64_1.png" width="480px" />
+                    <figcaption align="middle">Dragon with global light s 64, l 1</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_dir_bunny_64_32.png" width="480px" />
+                    <figcaption align="middle">Bunny with direct light s 64, l 32</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_indir_bunny_64_32.png" width="480px" />
+                    <figcaption align="middle">Bunny with indirect light s 64, l 32</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p> Notice how in indirect lighting, the bunny has no shadows and there is no light, since we don't know the light source in this situation. However, in the direct lighting, the ceiling is black since the light doesn't directly shine on the ceiling since it is originating from it, and you don't really see the diffuse color like the under parts of the bunny are all black instead of gray and detailed in indirect lighting.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_sphere_32_4_m0.png" width="480px" />
+                    <figcaption align="middle">Sphere s 64, l 32, ray depth </figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_sphere_32_4_m1.png" width="480px" />
+                    <figcaption align="middle">Sphere s 64, l 32, ray depth 1</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_sphere_32_4_m2.png" width="480px" />
+                    <figcaption align="middle">Sphere s 64, l 32, ray depth 2 </figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_sphere_32_4_m3.png" width="480px" />
+                    <figcaption align="middle">Sphere s 64, l 32, ray depth 3</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_sphere_32_4_m4.png" width="480px" />
+                    <figcaption align="middle">Sphere s 64, l 32, ray depth 4</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_sphere_32_4_m5.png" width="480px" />
+                    <figcaption align="middle">Sphere s 64, l 32, ray depth 5</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_sphere_32_4_m100.png" width="480px" />
+                    <figcaption align="middle">Sphere s 64, l 32, ray depth 100</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p> With the differing ray depths, since the spheres aren't of any special material, the rays don't really bounce off anywhere special, however, if we look at the top corners of the back wall, we can see that it gets significantly brighter and less shadowed and speckled when you compare ray depth of 1 and ray depth of 5. The back wall in general just gets significantly brighter. However, between depth 5 and depth 100, the images look basically exactly the same.
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_sphere_1_1.png" width="480px" />
+                    <figcaption align="middle">Sphere s 1, l 1</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_sphere_4_2.png" width="480px" />
+                    <figcaption align="middle">Sphere s 4, l 2</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_sphere_16_8.png" width="480px" />
+                    <figcaption align="middle">Sphere s 16, l 8</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_sphere_64_32.png" width="480px" />
+                    <figcaption align="middle">Sphere s 64, l 32</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4_sphere_1024_512.png" width="480px" />
+                    <figcaption align="middle">Sphere s 1024, l 1</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>The images get significantly smoother. Since I had varying light values because I thought the light was always supposed to be half of the sample, until I tried rendering the sphere at s=1024, and l=512 and hogged the servers for 12 hours over night and it was still at 18% did I realized I could just use light 1. Notice how the image is signiticantly smoother and has way less noise, and the spheres are smoother. It's brighter in the last one because l=1. 1024 is beautiful.</p>
+
+
+    <h2 align="middle">Part 5</h2>
+        <p>For reflect, from assignment 2, I know that the formula to find the reflection direction of a vector is below</p>
+        <p align="middle"><pre align="middle">vector_o = 2(vector_i dot normal)*normal - vector_i</pre></p>
+        <p>So in reflect, I simply used the function with i as wo and stored the reflected result in wi.</p>
+        <p> In mirror, I simply set the pdf to 1 and I called reflect, and then I returend the result of reflectance divided by cosine of wi. </p>
+        <p>For refract, I set no and ni based on the direction wo was pointing in. The I check if there is total reflection using Snell's law.</p>
+        <p align="middle"><pre align="middle">(no/ni)*sqrt(1 - wo.z^2) >= 1</pre></p>
+        <p>I then find the cosine of theta_i, which I found using the below formula: </p>
+        <p align="middle"><pre align="middle">sqrt(1 - (no/ni)^2) * (1 - (no/ni)^2)</pre></p>
+        <p>Since the cosine should always be an opposite sign of the sine (which is wo.z), if wo.z is positive, I negated the result of the cosine. Then I set wi's x value to be (no/ni) * -wo.x, since our wo is in the opposite direction, and y to be the same thing but with -wo.y, and the z value to be the cosine term I found earlier.</p>
+        <p>Now for GlassBSDF::sample_f, I first call refract to see if total internal reflection occurs. If that doesn't occur, i.e., if refract is true, then I first assign my no and ni values accordingly. Then I use Schlick's approximation to find the constant R, and coin flip based on R. If coin flip returns true, then I call reflect, and I assign pdf to be R and I return the radiance of R * (reflectance/cos(wi)). If it's false, I assign pdf to be 1 - R, and I call refract, and set the radiance I return to be (1-R) * transmittance*(no/ni)*(no/ni)/cos(wi). In my formula, I always used abs_cos_theta, and also in my function for this part, I swapped ni and no, so I actually had ni/no, but it turns out the same since the values are swapped.</p>
+        <p> If total internal reflectance does occur, then I just call reflect and set pdf to be 1 and return radiance of reflectance/cos(wi).</p>
+        <p>To render the images, I wrote a shell script and just ran it because I was lazy.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5_sphere_1024_1_m0.png" width="480px" />
+                    <figcaption align="middle">Sphere s 1024, l 1, ray depth 0</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5_sphere_1024_1_m1.png" width="480px" />
+                    <figcaption align="middle">Sphere s 1024, l 1, ray depth 1</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5_sphere_1024_1_m2.png" width="480px" />
+                    <figcaption align="middle">Sphere s 1024, l 1, ray depth 2</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5_sphere_1024_1_m6.png" width="480px" />
+                    <figcaption align="middle">Sphere s 1024, l 1, ray depth 6</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5_sphere_1024_1_m100.png" width="480px" />
+                    <figcaption align="middle">Sphere s 1024, l 1, ray depth 100</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>Notice how at depth 1, the right sphere is semi illuminated because the light is trapped inside the ball and hasn't bounced out yet. Also, by depth 6, we see a little patch of light formed on the wall to the right side because of the bounces and also a white spot in the shadow of the ball.</p>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5_sphere_1_1_m100.png" width="480px" />
+                    <figcaption align="middle">Sphere s 1, l 1, ray depth 100</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5_sphere_4_1_m100.png" width="480px" />
+                    <figcaption align="middle">Sphere s 4, l 1, ray depth 100</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5_sphere_16_1_m100.png" width="480px" />
+                    <figcaption align="middle">Sphere s 16, l 1, ray depth 100</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5_sphere_64_1_m100.png" width="480px" />
+                    <figcaption align="middle">Sphere s 64, l 1, ray depth 100</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="center">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5_sphere_1024_1_m100.png" width="480px" />
+                    <figcaption align="middle">Sphere s 1024, l 1, ray depth 100</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>LOOK HOW SMOOTH 1024 LOOKS IT LOOKS LIKE IT'S BEEN PHOTOSHOPPED TO LOOK BEAUTIFUL AND SMOOTHENED OUT AND USED NEUTROGENA FACE WASH OR SOMETHING</p>
+</div>
+</body>
+</html>
+
+
+
+

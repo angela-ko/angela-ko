@@ -1,0 +1,335 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>  
+    div.padded {  
+      padding-top: 0px;  
+      padding-right: 100px;  
+      padding-bottom: 0.25in;  
+      padding-left: 100px;  
+    }  
+  </style> 
+<title>Angela Ko  |  CS 184</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+<br />
+<h1 align="middle">Assignment 1: Rasterizester</h1>
+    <h2 align="middle">Angela Ko</h2>
+
+    <div class="padded">
+        <p>I thought this project was due on the 18th, so I started much later than I should have which ended up with me not having enough time for me to complete the project. We used knowledge from the first 4 lectures to create texture mappings and anti-aliasing, and rasterization of images, and triangle meshes.</p>
+
+    <h2 align="middle">Part 1: Rasterizing Lines</h2>
+        <p>For this part, I used Bresenham's algorithm. At first, the lines did not show up in the right areas until I added more constraints such as checking how steep the slope is and swapping x and y values if needed, e.g. if the y values are larger than the x values or if the slope is negative, etc.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part1.png" width="800px" />
+                    <figcaption align="middle">Here is a picture of the result of test2.svg after implementing part 1</figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">Part 2: Rasterizing single-color triangles</h2>
+        <p>For part 2, I first tried using the functions from the textbook, with the f12, f01, f20 and the barycentric coordinates. However, for some reason, even though I triple-quadruple-i-dont-know-the-next-number checked the formulas, it somehow just never worked out and would give me squares in the places of triangles for basic/test3.svg. Eventually, I gave up and switched to using the formula from Lecture 2, slide 118, which worked really well so I stuck with it. (Actually I went back to try and get the textbook formula to work but it didn't, so I reverted again) </p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3-1.png" width="800px" />
+                    <figcaption align="middle">Results Caption: sampling rate 1</figcaption>
+                </tr>
+            </table>
+        </div>
+        
+    <h2 align="middle">Part 3: Antialiasing triangles</h2>
+        <p>In order to implement supersampling, I created a new function called rasterize_pixel that wrote objects into a new struct called "superbuffer" that was bigger. The basic concept behind it was to draw an image and then downsize it by averaging out a cube with the dimensions sqrt(sample_rate) by sqrt(sample_rate). So in my rasterize triangle, the only thing I really changed was to make it call rasterize_pixel and write the pixels into a superbuffer instead of the framebuffer. I also made sure to resize my superbuffer in the resize function, initialize it as white in the redraw function, and also resize it in the keyboard calls.</p>
+        <p>The main work done here was the resolve function, which I struggled on for a really long time. One of the main reasons why I struggled so much with this section is because I've never used C++ before and I've only had a limited experience with C from taking 61C, so alot of the syntactical things were really confusing to me, so I had alot of bugs dealing with floats vs ints vs other types. After I implemented resolve, I thuoght I was supposed to increment the other frame buffer values by 4 because I thought that each one of the buffer values was 4 bytes long, however, turns out I'm just using the x,y values so I was only supposed to incre
+        ment by 1 each time. Because my whole color function was messed up and I was incrementing by 4, I ended up with this weird screen effect that made my images look really grainy</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/pixels.png" width="800px" />
+                    <figcaption align="middle">Random pixels started showing up and making everything look like it has poor resolution</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p> Furthermore, when I was increasing the sample rate, I was just scaling the triangles weirdly and everything was just really bad.
+        </p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/scaling.png" width="800px" />
+                    <figcaption align="middle">Weird triangle scaling effect</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p> After I asked on piazza and found out what was causing the grainy effect, I changed my step size back to 1 instead of 4, and I also fixed some other bugs here and there, and I ended up with the blood of satan on my screen.
+        </p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/blood.jpg" width="800px" />
+                    <figcaption align="middle">Satanic</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>All this made me really sad, then I went to the hw party, and suddenly I was getting seg faults!! But it turns out, I was intializing the size incorrectly because I was multiplying it by the squareroot of sample rate when the superbuffer's size is actually multiplied by not only the squareroot of the samplerate since I'm not just trying to index it by one of its dimensions. I also fixed some various syntax errors when I was manipulating my colors, and also I had to make sure that I multiplied the vertices of the original triangle by the square root of the sample rate since I am increasing the sample rate and basically trying to make a bigger image of the triangles that I can scale down later,<em>and</em> <b> HALLELUAH </b>, the best day of my life, my part 3 got to work</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3-1.png" width="800px" />
+                    <figcaption align="middle">Results Caption: sampling rate 1</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3-4.png" width="800px" />
+                    <figcaption align="middle">Results Caption: sampling rate 4</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3-1.png" width="800px" />
+                    <figcaption align="middle">Results Caption: sampling rate 9</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3-1.png" width="800px" />
+                    <figcaption align="middle">Results Caption: sampling rate 16</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>However, although these triangles turned out nicely, the lines around my picture disappeared! So I had to modify rasterize_point to make it write into the superbuffer as well, making sure that I was writing into the superbuffer multiple times (as many times as the sample rate) since that's how much bigger the super buffer is than the frame buffer, and <em>VOILA!</em>, my lines came back!
+        </p>
+        <p>
+        Later in part 6, I realized that apparently my code <em>isn't</em> completely correct. I wasn't rasterizing clockwise triangles. I realized that I was supposed to check and see, and when a triangle is clockwise, I have to make it counter clockwise. For some reason, I couldn't get it to work. I used a formula regarding dot products that I found on stack overflow, which is if dX0 * dY0 + dX1 * dY1 + dX2 * dY2 is positive, then the triangle is clockwise. Then I tried simply swapping the x0 and x2 values with hopes to change the direction of the triangle. Finally, it seemed to work.
+        </p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/test6.png" width="800px" />
+                    <figcaption align="middle">Broken test 6, uncolored polygons, before I checked for the direction of the triangle</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-1.png" width="800px" />
+                    <figcaption align="middle">Only counterclockwise triangles</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/test6-1.png" width="800px" />
+                    <figcaption align="middle">Only rasterizing clockwise triangles after my attempted fix</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-2.png" width="800px" />
+                    <figcaption align="middle">Now only clockwise triangles in this image as well</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/test6-2.png" width="800px" />
+                    <figcaption align="middle">It's fixed!!</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-3.png" width="800px" />
+                    <figcaption align="middle">Triangle problem is fixed..but texture isn't</figcaption>
+                </tr>
+            </table>
+        </div>
+
+
+
+
+    <h2 align="middle">Part 4: Transforms</h2>
+        <p>This part was a relief after part 3. It was fairly straightforward. I created my transformation matrices based on the Lecture Slides with the homogenous coordinates from Lecture (to-do) Slide (to-do). Afterwards, for move-view, I figured out what the original x,y, and span coordinates were based on set_view's function on how they were stored. At first, no matter what I did, it would just zoom in on the image alot, however, it turns out I forgot to add by span since I wrote a new svg_to_ndc matrix. So, I just used set_view with the modifications using my new dx, dy, and zoom values.</p>
+        <p> I then created a new svg file using geometric primitives. I wasn't sure about the whole two matrices deep, and I wasn't sure if it was limited to one type of transformation per file so I did two turns of the same type of transformation in each file, so it's two matrices deep. </p>
+        <p> They are in a file named part4 within svg</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4.png" width="800px" />
+                    <figcaption align="middle">The base file...</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/scale.png" width="800px" />
+                    <figcaption align="middle">In this one you can tell how the triangles look kinda like a mountain because the middle triangle is too fat because it got an extra scaling since it's in it's own inner grouping, then gets the same scaling once more.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/translate.png" width="800px" />
+                    <figcaption align="middle">You can see how in this one, one of the triangles appears to attempting to escape the other too slyly, kinda like me when I'm caught in small talk. That's because it had an extra translation matrix applied to it since it was in the inner grouping.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/rotate.png" width="800px" />
+                    <figcaption align="middle">A rotation! You can see how the one in the inner group is not aligned with the others..It's as if the other two triangles found out he was escaping and they're trying to capture him</figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">Part 5: Barycentric coordinates</h2>
+        <p>For this part, I used a matrix that we discovered in Ben's discussion section. </p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/bary1.png" width="800px" />
+                    <figcaption align="middle">Formula describing how screen space coordinates can be written using barycentric coordinates</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/bary2.png" width="800px" />
+                    <figcaption align="middle">From the previous formula, we were able to derive the matrix form that we can use to convert from barycentric coordinates to screen space x,y coordinates</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>Using these matrices, I was able to find the barycentric coordinates from the screen space coordinates since AB^-1 = B^-1A^-1, I took the inverses and multiplied it by the vector (x y 1)^T. </p>
+        <p>Knowing the barycentric coordinates, in my rasterize triangle function, I found the barycentric coordinates if the tri point was non-null, and using the alpha beta values, in tri->color, I recovered the gamma value since gamme = 1 - alpha - beta, and found the alpha blended color value using the given values of the triangle vertices' colors interpolated with the alpha beta gamma values.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5.png" width="800px" />
+                    <figcaption align="middle">Color wheel!</figcaption>
+                </tr>
+            </table>
+        </div>
+              
+
+
+
+    <h2 align="middle">Part 6: Pixel sampling for texture mapping</h2>
+        <p>I filled in rasterize_triangle to pass in the sample params and the psm values, and I used the uv coordinates and my barycentric coordinates to calculate what the sp.uv value was. I also found the dx values for (u+1, v) and dy values for (u, v+1). Then after passing in my values, I was able to index into the mipmap and access the pixels and find the color values from there after scaling the u and v values by the dimensions of the mipmap. </p>
+        <p> I used the bilinear algorithm from textbook page 246, however, it still looked wrong. I checked to make sure my UV coordinates were reasonable (which they were), and I made sure my alpha beta gamma values were sound, which they were, other than some which were like -0.000012 or something, but then i added a bounds to check, but I just somehow could NOT get it to work!!
+        </p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-3.png" width="800px" />
+                    <figcaption align="middle">Weird texture from back in part 3</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>Finally! After hours and hours of debugging, I found out that I was supposed to round the u,v values to ints whereas I was using floats the whole time! Incredible. Then the image showed up. However, for some reason, my code was incredibly slow (even in part 3), even after I applied the fix that Ben mentioned making sure that we don't step over the entire map each time, so I wasn't able to check if my bilinear looked ok.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6comp.png" width="800px" />
+                    <figcaption align="middle">Finally worked. Looked kinda weird? But figured that was cause of the sampling rate or cause nearest pixel doesn't do that great of a job.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/framerate.png" width="800px" />
+                    <figcaption align="middle">Framerate became zero at one point and nowthing would show up...weird.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">Part 7: Level sampling with mipmaps for texture mapping</h2>
+        <p>For this part, I calculated the dx and dy vectors using the methods mentioned above in part 6 (I guess I kinda did them together at the same time), and I scaled the uv du dv values by the width and height took the log of the max of the differences between the newly scaled texture uv du dv values.</p>
+        <p> For some reason, I was unable to initialize a 3x3 matrix, which I later figured out it might've been because I didn't import it or something? So I used a systems of equations to scale the values into texture vectors.</p>
+        <p>This was also very very incredibly slow, so slow that it took like 5 minutes to take a screenshot, and I checked my levels and made sure they were reasonable.</p> 
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7.png" width="800px" />
+                    <figcaption align="middle">Seemed about right based on piazza observations.</figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">Part 8: My drawing</h2>
+        <p>I made a mountain with some ugly tree LOL.
+        </p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/my_illustration.png" width="800px" />
+                    <figcaption align="middle">sorry</figcaption>
+                </tr>
+            </table>
+        </div>
+
+    <h2 align="middle">A Few Notes On Webpages</h2>
+        <p>Here are a few problems students have encountered in the past. You will probably encounter these problems at some point, so don't wait until right before the deadline to check that everything is working. Test your website on the instructional machines early!</p>
+        <ul>
+        <li>Your main report page should be called index.html.</li>
+        <li>Be sure to include and turn in all of the other files (such as images) that are linked in your report!</li>
+        <li>Use only <em>relative</em> paths to files, such as <pre>"./images/image.jpg"</pre>
+        Do <em>NOT</em> use absolulte paths, such as <pre>"/Users/student/Desktop/image.jpg"</pre></li>
+        <li>Pay close attention to your filename extensions. Remember that on UNIX systems (such as the instructional machines), capitalization matters. <pre>.png != .jpeg != .jpg != .JPG</pre>
+        <li>Be sure to adjust the permissions on your files so that they are world readable. For more information on this please see this tutorial: <a href="http://www.grymoire.com/Unix/Permissions.html">http://www.grymoire.com/Unix/Permissions.html</a></li>
+        <li>And again, test your website on the instructional machines early!</li>
+</div>
+</body>
+</html>
+
+
+
+

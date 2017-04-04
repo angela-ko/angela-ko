@@ -1,0 +1,428 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<style>  
+    div.padded {  
+      padding-top: 0px;  
+      padding-right: 100px;  
+      padding-bottom: 0.25in;  
+      padding-left: 100px;  
+    }  
+  </style> 
+<title>Angela Ko  |  CS 184</title>
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+<link rel="stylesheet" type="text/css" href="style.css" media="screen" />
+</head>
+<body>
+<br />
+<h1 align="middle">Assignment 2: GeoMenagerie</h1>
+    <h2 align="middle">Angela Ko</h2>
+
+    <div class="padded">
+        <p>For this project, it was a great practice on understanding what exactly a bezier curve does, the implementation of it, and pointer manipulation, along with the implementation of loop subdivison. In the debugging process, I had to go line by line analysis of my loop subdivision and my flipping and splitting of edges so many times that I think loop subdivision has become an innate part of me now.</p>
+        <p> Thankfully, I received help from multiple homework parties and office hours that I attended and started on the project earlier than last time. </p>
+
+    <h2 align="middle">Part 1: Fun with Bezier Patches</h2>
+        <p>For this part, I used a matrix form for Bezier patch evaluation using the formula I found on http://www.idav.ucdavis.edu/education/CAGDNotes/Matrix-Cubic-Bezier-Patch/Matrix-Cubic-Bezier-Patch.html. I calculated the P matrices and the constant matrices in the preprocess, then in the evalution, I multiplied them together for each one of the x, y, z, coordinates and I added all of these to the mesh. Since the mesh is 8x8 grid, I added them to the mesh in increments of 0.125.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part1.png" width="800px" />
+                    <figcaption align="middle">Results after part 1</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part1-1.png" width="800px" />
+                    <figcaption align="middle">Results after part 1</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part1-2.png" width="800px" />
+                    <figcaption align="middle">POV</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part1-3.png" width="800px" />
+                    <figcaption align="middle">My faces were inside out because I was adding triangles in the wrong order.</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>The difficult part about adding to the mesh was figuring out what the order of adding was. I even drew out a little square in my comments to keep track of the vertices:</p>
+        <p>a b</p>
+        <p>c d</p>
+        <p>And I kept track that I had to do a, b, c, then c, d, a when I was adding</p>
+
+    <h2 align="middle">Part 2: </h2>
+        <p>This part was pretty straightforward. With the aid of article 7 on the 184 website, I created a do while loop and iterated through the mesh using ->next and ->twin. I first got the 2 vertices of each edge and subtracted to get the vector, and I took the cross product of the trangle edges and moved on the the next face using twin and next. I had a minor bug in this part that I fixed by switching to a do while loop instead, cause otherwise based on my loop, h would never be not equal to h_orig since I'm starting them off as the same value, so I had to switch from a while loop to a do while in order to actually get inside the while loop.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part2.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part2-1.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part2-2.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+        </div>
+
+
+    <h2 align="middle">Part 3: </h2>
+        <p>This part was crazy. I was very confused at first, when I just did rough sketches and I ended up with empty holes in my teapot.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3.png" width="800px" />
+                    <figcaption align="middle">The tea is leaking!</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3-1.png" width="800px" />
+                    <figcaption align="middle">The tea is leaking!</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p>I then changed my method and I drew out each of the triangles and put an extremely detailed description in my comments to keep track of the items. I also relabelled my elements so it was easier to keep track of.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3-4.png" width="800px" />
+                    <figcaption align="middle">Life saving comments</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3-3.png" width="800px" />
+                    <figcaption align="middle">Before</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part3-2.png" width="800px" />
+                    <figcaption align="middle">After</figcaption>
+                </tr>
+            </table>           
+        </div>
+  
+    <h2 align="middle">Part 4: </h2>
+        <p>Similar to the previous part, I had to draw a very intense diagram to keep track of all my pointers, etc. The key part to this was just being able to keep track of my pointers. Later one I had bugs because of this section that I will talk about in part 5.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/notes.png" width="800px" />
+                    <figcaption align="middle">A picture of my notes</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/comments.png" width="800px" />
+                    <figcaption align="middle">Comments that kept me sane</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4.png" width="800px" />
+                    <figcaption align="middle">Split</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4-1.png" width="800px" />
+                    <figcaption align="middle">Flip</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part4-2.png" width="800px" />
+                    <figcaption align="middle">Split</figcaption>
+                </tr>
+            </table>
+            
+        </div>
+    <h2 align="middle">Part 5: </h2>
+        <p>This part..oh god it was devastating, as you will soon be able to tell from the massive amounts of screenshots. First my implementation. I first started off computing new positions for all the vertices in the input mesh and stored them into newPosition and marked them as old by iterating through the vertexmesh and summing them up. Then I calculated the new vertices' new positions and stored them into the edge newposition by iterating through the edges in the mesh and setting each edge to old while doing that. Following these parts, I began splitting my edges. I checked to make sure that <b>both</b> the edge was old <b>and</b> both the vertices of the edge were old before continuing, else if one of the edges were new or if the edge was new, I would just move on to the next edge.</p>
+        <p>After splitting my edges, I used the new vertex returned by my mesh (which points to the an old edge), and set the other half of the edge to be old and the two new edges on the opposite orientation to be new. It was also at this time that I moved the edge's newposition into the vertices' new position.</p>
+        <p>Now I began splitting the edges by iterating through using the safe while loop, and checking that if one of the vertices is new and the other is false AND the edge is new, I would flip the edge </p>
+        <p>Then I iterated through the vertices in the mesh and assigned all of the vertices to their respective new positions.</p>
+        <p>Here are some glorious pictures from the buggy days</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5.png" width="800px" />
+                    <figcaption align="middle">Ugly</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-1.png" width="800px" />
+                    <figcaption align="middle">Ugly</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-2.png" width="800px" />
+                    <figcaption align="middle">Ugly</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-3.png" width="800px" />
+                    <figcaption align="middle">Ugly</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-4.png" width="800px" />
+                    <figcaption align="middle">Ugly</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-5.png" width="800px" />
+                    <figcaption align="middle">Mother, please help</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-6.png" width="800px" />
+                    <figcaption align="middle">Doritoes</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-7.png" width="800px" />
+                    <figcaption align="middle">Better but ugly</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-9.png" width="800px" />
+                    <figcaption align="middle">Better but square???</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-10.png" width="800px" />
+                    <figcaption align="middle">Seems fine here...but it isn't!</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-13.png" width="800px" />
+                    <figcaption align="middle">Oh god what's happening but You can see the shape of the teapot</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-14.png" width="800px" />
+                    <figcaption align="middle">These holes are actually a new design</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-15.png" width="800px" />
+                    <figcaption align="middle">Yes, it's modern art</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-16.png" width="800px" />
+                    <figcaption align="middle">The teapot poked these holes!!</figcaption>
+                </tr>
+            </table>
+        </div>
+        <p> As you can tell by the above, there were just so many problems with my code. One of the weirdest problems that I was stuck on for a long long time was that when I did subdivide on the cube, everything would look correct EXCEPT for one lone edge on one lone face that wasn't flipped. This confused me and GSI Ben for a long long time, but I managed to fix it later. There were a variety of other problems that we found while trying to debug this problem. One of the problems was that I was iterating through the edge mesh and not the vertex mesh in the beginning when calculating positions, another was my boundary checks were inadequate, and finally the most important bug that I caught after rechecking my split edge 5 times was that I was forgetting to reset the vertices' halfedges!</p>
+        <p>Another bug was that when setting my vertice's position, I was iterating by edges and not vertices, so I was missing some points here and there</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-17.png" width="800px" />
+                    <figcaption align="middle">BEAUTIFUL: subdivided once</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-18.png" width="800px" />
+                    <figcaption align="middle">BEAUTIFUL</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-19.png" width="800px" />
+                    <figcaption align="middle">Subdivide twice: still beautiful</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part5-20.png" width="800px" />
+                    <figcaption align="middle">FANTASTIC!</figcaption>
+                </tr>
+            </table>
+        </div>
+    <h2 align="middle">Part 6: </h2>
+        <p>For this part, for shadePhong, I referenced the equations from the lecture slides that explained the BhingPhong model with the La + Ls + Ld, and that is how I computed by values. I found the vector of the eyeposition, v and the vector of the light,l, the bisector vector h, and the normalized normal vector n. I messed around with the constants as well to try and improve the lighting, and also messed around with the colors so I could see it better. I noticed that the smaller the power, the bigger the blotch of light was on the teapot, so I tried to use a bigger power value so it would be more clear to see the teapot. </p>
+        <p>For environment mapping, I calculated the reflection direction vector using (2*(v dot n)*n - v), where v is the vector to the eye position and n is the normal vector. Using this, I calculated the theta and phi values using the equations given in the link, which are basically theta = arctan(y / x) and phi is arctan((x^2 + y^2)/z), and modified the values according to the specs (theta/2*pi, phi/pi) for the uv coordinates to retrieve the color values from the texture map.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-1.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-2.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-3.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-4.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-5.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-6.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-7.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part6-8.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+        </div>
+    <h2 align="middle">Part 7: </h2>
+        <p>For this part, I kinda just messed around and weird things started happening like the number of vertex positions != the number of vertices, so although I was intending on making some sort of abstract vase with a flower, I deleted most of the flower so now it's just kind of an abstract metal vase that's broken ish.</p>
+        <div align="left">
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7-1.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7-2.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+            <table style="width=100%">
+                <tr>
+                    <td align="middle">
+                    <img src="images/part7-3.png" width="800px" />
+                    <figcaption align="middle">Results Caption: my mesh is the best mesh</figcaption>
+                </tr>
+            </table>
+        </div>
+    
+
+    <h2 align="middle">A Few Notes On Webpages</h2>
+        <p>Here are a few problems students have encountered in the past. You will probably encounter these problems at some point, so don't wait until right before the deadline to check that everything is working. Test your website on the instructional machines early!</p>
+        <ul>
+        <li>Your main report page should be called index.html.</li>
+        <li>Be sure to include and turn in all of the other files (such as images) that are linked in your report!</li>
+        <li>Use only <em>relative</em> paths to files, such as <pre>"./images/image.png"</pre>
+        Do <em>NOT</em> use absolulte paths, such as <pre>"/Users/student/Desktop/image.png"</pre></li>
+        <li>Pay close attention to your filename extensions. Remember that on UNIX systems (such as the instructional machines), capitalization matters. <pre>.png != .jpeg != .png != .png</pre>
+        <li>Be sure to adjust the permissions on your files so that they are world readable. For more information on this please see this tutorial: <a href="http://www.grymoire.com/Unix/Permissions.html">http://www.grymoire.com/Unix/Permissions.html</a></li>
+        <li>And again, test your website on the instructional machines early!</li>
+</div>
+</body>
+</html>
+
+
+
+
