@@ -59,7 +59,7 @@ body {
 	border-radius: 3px;
 }
 @keyframes Animate-Eng {
-a from {
+from {
  width: 10px;
 }
 to {
@@ -105,7 +105,7 @@ to {
 	border-radius: 3px;
 }
 @keyframes Animate-Python {
-a from {
+from {
  width: 10px;
 }
 to {
@@ -177,7 +177,7 @@ to {
 	border-radius: 3px;
 }
 @keyframes Animate-SQL {
-a from {
+from {
  width: 10px;
 }
 to {
@@ -275,7 +275,7 @@ to {
 	border-radius: 3px;
 }
 @keyframes Animate-Java {
-a from {
+from {
  width: 10px;
 }
 to {
@@ -373,7 +373,7 @@ to {
 	border-radius: 3px;
 }
 @keyframes Animate-HTML {
-a from {
+from {
  width: 10px;
 }
 to {
@@ -419,7 +419,7 @@ to {
 	border-radius: 3px;
 }
 @keyframes Animate-French {
-a from {
+from {
  width: 10px;
 }
 to {
