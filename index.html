@@ -8,9 +8,13 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
         
         <link rel="stylesheet" type="text/css" href="assets/css/jquery.fullPage.css" />
+        
         <link rel="stylesheet" type="text/css" href="assets/css/foundation.css" />
-        <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+        <link rel="stylesheet" href="assets/css/app.css">
+        
         <link rel="stylesheet" type="text/css" href="assets/css/skills-styles.css" />
+        <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+        <!-- <link rel="icon" href="" /> -->
 
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
         <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.9.1/jquery-ui.min.js"></script>
@@ -18,43 +22,54 @@
         <script type="text/javascript" src="assets/js/vendors/scrolloverflow.js"></script>
 
         <script type="text/javascript" src="assets/js/jquery.fullPage.js"></script>
+         <script type="text/javascript" src="assets/js/jquery.fullpage.extensions.min.js"></script>
+        <script type="text/javascript" src="assets/js/fullPage.scrollOverflowReset.min.js"></script>
+        <script type="text/javascript" src="assets/js/foundation.min.js"></script>
         <script type="text/javascript">
             $(document).ready(function() {
                 $('#fullpage').fullpage({
-                    sectionsColor: ['#A2ADBC', '#FFFFFF', '#8bb2af', '#DF9496', '#A2ADBC'],
-                    anchors:['Home', 'About', 'Skills', 'Code', 'Design', 'Contact Me'],
+                    sectionsColor: ['#A2ADBC', '#FFFFFF', '#8bb2af', '#DF9496', '#FFFFFF'],
+                    anchors:['Home', 'About', 'Skills', 'Projects', 'Contact Me'],
                     navigation: true,
                     navigationPosition: 'right',
                     navigationTooltips: ['Home', 'About', 'Skills', 'Projects', 'Contact Me'],
-                    scrollOverflow: true
+                    scrollOverflow: true,
+                    scrollOverflowReset: true,
+                    scrollOverflowResetKey: 'YWx2YXJvdHJpZ28uY29tXzlRaGMyTnliMnhzVDNabGNtWnNiM2RTWlhObGRBPT14Ykk='
                 });
             });
         </script>
     </head>
     <body>
+<!-- #DF9496 -->
 
     <div id="fullpage">
         <div class="section active" id="section0">
             <h1>Angela Ko</h1>
             <div class="bio">Software Engineer • Philomath • Ailurophile • <a href="assets/img/about/resume.pdf" target="_blank">Resume </a></div>
-
-            </div>
-
+        </div>
         <div class="section" id="section1">
             <div id="container">
-                <div id="thumbnail"><img src="assets/img/about/me.jpg" width=450px></div>
+                <div id="profile-pic"><img src="assets/img/about/me.jpg" width=450px></div>
                 <div id="header">ANGELA KO</div>
                 <div id="subheader">3rd Year Cognitive Science & Computer Science</div>
                 <p id="description"><b>Welcome to my website!</p></b>
                 <p id="description1">Since I don’t really know how to start off this introduction without sounding like I’m on LinkedIn or a dating website and I also really enjoy making lists, I’ll just list off things that I love and hopefully it'll allow you to learn more about me as a person!</p>
                 <div class="list-container">
-                    <div class="list-title">Things I Love</div>
-                    <div class="list-content">
-                        <div class="list-item">...<b><i>learning</i></b>.  I love learning about people and the process of slowly unravelling more and more hidden traits of new and old friends. I love learning about how people work, which is why I double major in Cognitive Science, as people’s minds just fascinate me so much. I also really love learning new skills and also learning about how devices in our day to day lives actually function (e.g. learning about circuits and touchscreens). <b><i>More importantly, ...</i></b></div>
-                        <div class="list-item">...<b><i>the process of learning</i></b>. The experience of something completely foreign and unfamiliar suddenly makes so much sense is such a strange yet amazing process. Here is a funny example of what I mean!  </div>
-                        <div class="list-item">...<b><i>organization</i></b>. From Google calendars to bullet journals, I thoroughly enjoy planning out every single detail of my life and in fact, I would often time my activities to the minute. As a result, I am a big believer in the idea that there is always time if you try to make time. <b><i>Yet at the same time,...</i></b></div>
-                        <div class="list-item">...<b><i>going where life takes me</i></b>. Although I really enjoy planning out every detail of my life, and sometimes, the unexpected and unknown can worry me a bit, as cheesy as it may sound, many of the best things in life are unexpected. This phrase rings particularly true with my college career. For instance, having no prior experience with computer programming, I came into college expecting to do business and psychology, yet after much egging by my friend, I decided to enroll in the notorious introduction to computer science course: CS61A, a course that opened a brand new world of things that I had never imagined I would be capable of doing. Another such example is the fact that I ended up being on the staff for an Introduction to Electrical Engineering for two entire years by pure luck! You can read more about that story here.</div>
-                    </div>
+                    <ul class="accordion" data-accordion data-allow-all-closed="true">
+                    <li class="accordion-item" data-accordion-item>
+                        <a href="#panel1a" class="accordion-title">Things I Love</a>
+                        <div id="panel1a" class="accordion-content" data-tab-content>
+                            <div class="list-item">...<b><i>learning</i></b>.  I love learning about people and the process of slowly unravelling more and more hidden traits of new and old friends. I love learning about how people work, which is why I double major in Cognitive Science, as people’s minds just fascinate me so much. I also really love learning new skills and also learning about how devices in our day to day lives actually function (e.g. learning about circuits and touchscreens). <b><i>More importantly, ...</i></b></div>
+                            <div class="list-item">...<b><i>the process of learning</i></b>. The experience of something completely foreign and unfamiliar suddenly makes so much sense is such a strange yet amazing process. Here is a funny example of what I mean!  </div>
+                            <div class="list-item">...<b><i>organization</i></b>. From Google calendars to bullet journals, I thoroughly enjoy planning out every single detail of my life and in fact, I would often time my activities to the minute. As a result, I am a big believer in the idea that there is always time if you try to make time. <b><i>Yet at the same time,...</i></b></div>
+                            <div class="list-item">...<b><i>going where life takes me</i></b>. Although I really enjoy planning out every detail of my life, and sometimes, the unexpected and unknown can worry me a bit, as cheesy as it may sound, many of the best things in life are unexpected. This phrase rings particularly true with my college career. For instance, having no prior experience with computer programming, I came into college expecting to do business and psychology, yet after much egging by my friend, I decided to enroll in the notorious introduction to computer science course: CS61A, a course that opened a brand new world of things that I had never imagined I would be capable of doing. Another such example is the fact that I ended up being on the staff for an Introduction to Electrical Engineering for two entire years by pure luck! You can read more about that story here.</div>
+                            <div class="list-item">...<b><i>life and loving life</i></b>. Every single day is filled with so many wonderful things and we just need to be able to look for these wonderful occurrences. </div>
+                            <div class="list-item">...<b><i>problem solving</i></b>. From mundane day-to-day problems like buying an new appliance and reading the instruction manual to understand how it works or deciding how to minimize my need to walk, to more complex algorithmic problems, the process of giving my brain a workout is such a satisfying process. </div>
+                            <div class="list-item">...<b><i>cats</i></b>. Cats don’t care what anyone thinks about them and live life at their own pace, yet are still admired. That’s how I want to live my life (well, not necessarily the admired part, but the ability to live life at my own pace and do my own thing). </div>
+                        </div>
+                    </li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -62,6 +77,7 @@
         <div class="section" id="section2">
             <div id="container">
                 <div class="skills-header">Skills</div>
+                <p><i>Refresh the page to see the bars animate!</p></i>
                 <div class="skills-container">
                 <div class="row">
                     <div class="skills-subheader">Coding</div>
@@ -151,9 +167,8 @@
                 <div class="projects-header">Projects</div>
                 <div class="projects-container">
                     <div class="projects-subheader">Coding Projects</div>
-                    <div class="row"> 
-                        <div class="small-4 medium-4 large-4 columns">
-                            <a href="projects/code/software/index.html" target="_blank">
+                    <div class="row small-up-1 medium-up-2 large-up-3">
+                        <div class="column column-block"><a href="projects/code/software/index.html" target="_blank">
                                 <div class="cell-img">
                                     <div class="cell-overlay">
                                         <div class="cell-text">
@@ -164,8 +179,7 @@
                                 </div>
                             </a>
                         </div>
-                        <div class="small-4 medium-4 large-4 columns">
-                            <a href="projects/code/software/index.html" target="_blank">
+                        <div class="column column-block"><a href="projects/code/software/index.html" target="_blank">
                                 <div class="cell-img">
                                     <div class="cell-overlay">
                                         <div class="cell-text">
@@ -176,7 +190,7 @@
                                 </div>
                             </a>
                         </div>
-                        <div class="small-4 medium-4 large-4 columns">
+                        <div class="column column-block">
                             <a href="projects/code/software/index.html" target="_blank">
                                 <div class="cell-img">
                                     <div class="cell-overlay">
@@ -190,9 +204,8 @@
                         </div>
                     </div>
                     <div class="projects-subheader">Design Projects</div>
-                    <div class="row"> 
-                        <div class="small-4 medium-4 large-4 columns">
-                            <a href="projects/code/software/index.html" target="_blank">
+                    <div class="row small-up-1 medium-up-2 large-up-3">
+                        <div class="column column-block"><a href="projects/code/software/index.html" target="_blank">
                                 <div class="cell-img">
                                     <div class="cell-overlay">
                                         <div class="cell-text">
@@ -203,19 +216,18 @@
                                 </div>
                             </a>
                         </div>
-                        <div class="small-4 medium-4 large-4 columns">
-                            <a href="projects/code/software/index.html" target="_blank">
+                        <div class="column column-block"><a href="projects/code/software/index.html" target="_blank">
                                 <div class="cell-img">
                                     <div class="cell-overlay">
                                         <div class="cell-text">
-                                            Posters & Misc
+                                            Posters
                                         </div>
                                     </div>
                                     <img src="assets/img/icons/poster.png"/>
                                 </div>
                             </a>
                         </div>
-                        <div class="small-4 medium-4 large-4 columns">
+                        <div class="column column-block">
                             <a href="projects/code/software/index.html" target="_blank">
                                 <div class="cell-img">
                                     <div class="cell-overlay">
@@ -233,9 +245,16 @@
         </div>
         
         <div class="section fp-auto-height" id="section4">
-            <h1>Contact Me</h1>
-        </div>
+            <div id="contact-container">
+                <div class="contact-header">Contact Me</div>
+                <div class="contact-box">
+                <div class="contact-content">
+                    <div class="reverse-text">moc.liamg@629okalegna :liamE</div>
+                </div>
+                </div>                
+            </div>
 
+        </div>
     </div>
 
     </body>
