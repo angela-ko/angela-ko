@@ -359,19 +359,6 @@ to {
 	-moz-border-radius: 3px;
 	border-radius: 3px;
 }
-#Skill-Japanese {
-	width: 70%;
-	animation: Animate-HTML 4s;
-	-webkit-animation: Animate-HTML 4s;
-	-moz-animation: Animate-HTML 4s;
-	-o-animation: Animate-HTML 4s;
-	height: 45px;
-	position: absolute;
-	background-color: #3B92CD;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
-}
 @keyframes Animate-HTML {
  from {
  width: 10px;
@@ -404,13 +391,58 @@ to {
 	width: 70%
 }
 }
+#Skill-Japanese {
+	width: 40%;
+	animation: Animate-Jap 4s;
+	-webkit-animation: Animate-Jap 4s;
+	-moz-animation: Animate-Jap 4s;
+	-o-animation: Animate-Jap 4s;
+	height: 45px;
+	position: absolute;
+	background-color: #3B92CD;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+@keyframes Animate-Jap {
+ from {
+ width: 10px;
+}
+to {
+	width: 40%
+}
+}
+@-webkit-keyframes Animate-Jap {
+ from {
+ width: 10px;
+}
+to {
+	width: 40%
+}
+}
+@-moz-keyframes Animate-Jap {
+ from {
+ width: 10px;
+}
+to {
+	width: 40%
+}
+}
+@-o-keyframes Animate-Jap {
+ from {
+ width: 10px;
+}
+to {
+	width: 40%
+}
+}
 
 #Skill-French {
-	width: 80%;
-	animation: Animate-French 4s;
-	-webkit-animation: Animate-French 4s;
-	-moz-animation: Animate-French 4s;
-	-o-animation: Animate-French 4s;
+	width: 70%;
+	animation: Animate-HTML 4s;
+	-webkit-animation: Animate-HTML 4s;
+	-moz-animation: Animate-HTML 4s;
+	-o-animation: Animate-HTML 4s;
 	height: 45px;
 	position: absolute;
 	background-color: #1abc9c;
@@ -418,38 +450,7 @@ to {
 	-moz-border-radius: 3px;
 	border-radius: 3px;
 }
-@keyframes Animate-French {
- from {
- width: 10px;
-}
-to {
-	width: 80%
-}
-}
-@-webkit-keyframes Animate-French {
- from {
- width: 10px;
-}
-to {
-	width: 80%
-}
-}
-@-moz-keyframes Animate-French {
- from {
- width: 10px;
-}
-to {
-	width: 80%
-}
-}
-@-o-keyframes Animate-French {
- from {
- width: 10px;
-}
-to {
-	width: 80%
-}
-}
+
 
 .Skill-Area {
 	z-index: 1;
