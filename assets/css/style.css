@@ -163,7 +163,7 @@ p{
 }
 .list-item {
     /* White box surrounding each list item*/
-    background-color: #FFFFFF;
+    background-color: #f5f5f5;
     /* Width of list items*/
     width: 85%;
     /* Necesary padding*/
